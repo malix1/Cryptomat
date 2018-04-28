@@ -40,7 +40,7 @@ namespace proje
             // herbir resmin boyutu belirleniyor
             iList.ImageSize = new Size(20,20);
             //    string path = Path.Combine("..","..","..","..","..","..","icons","folder.png");
-            string path = @"C:\Users\po288\OneDrive\Masaüstü\Crypto-master\proje\proje\icons\folder.png";
+            string path = @"\..\..\proje\project\icons\folder.png";
 
             // dbdeki isimleri listeye atıyoruz.
             kasaIsimleri = vb.diziyeVeriOkuma();

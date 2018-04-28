@@ -11,3 +11,13 @@ C:\Users\po288\OneDrive\Masaüstü\Crypto-master\proje\proje\obj\Debug\proje.Kas
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Crypto\Crypto-master\proje\proje\bin\Debug\proje.exe.config
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Crypto\Crypto-master\proje\proje\obj\Debug\proje.exe
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Crypto\Crypto-master\proje\proje\obj\Debug\proje.pdb
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\proje.exe.config
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.exe
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.pdb
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\proje.exe
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\proje.pdb
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.csprojResolveAssemblyReference.cache
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.icerikForm.resources
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.KasaOlusturma.resources
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.Properties.Resources.resources
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.csproj.GenerateResource.Cache
