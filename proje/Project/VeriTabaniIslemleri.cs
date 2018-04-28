@@ -19,20 +19,22 @@ namespace proje
             sqlBaglanti = new SqlConnection(baglanti);
         }
 
-        public bool veriEkleme(string isim,string sifre,string uzanti)
+        public bool veriEkleme(string isim,string sifre,string uzanti,string guvenlik)
         {
             bool hata = false;
+            // bağlantı kapalı ise aç
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
-            string txt = "insert into Kasa(isim,sifre,uzanti)values('" + isim + "','" + sifre + "','" + uzanti + "')";
-            SqlCommand cmd = new SqlCommand(txt, sqlBaglanti);
+            // sql ekleme komutu
+            string komut = "insert into Kasa(isim,sifre,uzanti,guvenlik)values('" + isim + "','" + sifre + "','" + uzanti + "','" + guvenlik + "')";
+            SqlCommand cmd = new SqlCommand(komut, sqlBaglanti);
             try
             {
                 cmd.ExecuteNonQuery();
             }
             catch (SqlException ex)
             {
-                // primary key exception
+                // primary key hatası, eğer birden fazla aynı kasa ismi var ise hata mesajı gönderiyoruz
                 if (ex.Number == 2627)
                     MessageBox.Show("Aynı kasa ismi birden fazla kullanılamaz.");
                 hata = true;
@@ -45,9 +47,27 @@ namespace proje
             }
             return hata;
         }
-        public void veriSilme(string isim)
+        public void veriSilme(string _isim)
         {
+            if (sqlBaglanti.State == ConnectionState.Closed)
+                sqlBaglanti.Open();
 
+            string komut = "DELETE FROM Kasa WHERE isim='"+_isim+"'";
+            SqlCommand cmd = new SqlCommand(komut, sqlBaglanti);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                if (sqlBaglanti.State == ConnectionState.Closed)
+                    sqlBaglanti.Close();
+            }
         }
         public void veriGuncelleme(string isim,string sifre,string uzanti)
         {

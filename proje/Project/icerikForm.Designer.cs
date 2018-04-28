@@ -60,7 +60,9 @@
             this.listv_Kasalar.Size = new System.Drawing.Size(334, 407);
             this.listv_Kasalar.TabIndex = 0;
             this.listv_Kasalar.UseCompatibleStateImageBehavior = false;
+            this.listv_Kasalar.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listv_Kasalar_ItemSelectionChanged);
             this.listv_Kasalar.DoubleClick += new System.EventHandler(this.listv_Kasalar_DoubleClick);
+            this.listv_Kasalar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listv_Kasalar_MouseClick);
             // 
             // btn_kasaSil
             // 

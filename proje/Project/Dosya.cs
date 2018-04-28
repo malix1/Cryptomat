@@ -27,9 +27,9 @@ namespace proje
             uzanti = @"c:\" + _ad;
             System.Diagnostics.Process.Start(@"c:\" + _ad);
         }
-        public void Sil(string _ad)
+        public void Sil(string _uzanti)
         {
-            Directory.Delete(uzanti+_ad);
+            Directory.Delete(_uzanti);
         }
     }
 }
