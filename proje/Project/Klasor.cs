@@ -6,25 +6,28 @@ using System.Threading.Tasks;
 using System.IO;
 namespace proje
 {
-    public class Dosya
+    public class Klasor
     {
         public string ad;
-        public string uzanti;
-        public Dosya()
+        public string yol;
+        public string guvenlik;
+        public Klasor()
         {
             ad = "";
-            uzanti = "";
+            yol = "";
+            guvenlik = "";
         }
-        public void Olustur(string _ad)
+        public void Olustur(string _ad,string _guvenlik)
         {
             ad = _ad;
-            uzanti = @"c:\" + _ad;
-            Path.Combine(uzanti);
-            Directory.CreateDirectory(uzanti);
+            yol = @"c:\" + _ad;
+            guvenlik = _guvenlik;
+            Path.Combine(yol);
+            Directory.CreateDirectory(yol);
         }
         public void Ac(string _ad)
         {
-            uzanti = @"c:\" + _ad;
+            yol = @"c:\" + _ad;
             System.Diagnostics.Process.Start(@"c:\" + _ad);
         }
         public void Sil(string _uzanti)

@@ -37,6 +37,7 @@
             this.lbl_sifre = new System.Windows.Forms.Label();
             this.txtBox_kasaSifre = new System.Windows.Forms.TextBox();
             this.btn_kasaEkle = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.grpbox_Kasalar.SuspendLayout();
             this.grpbox_KasaOzellik.SuspendLayout();
             this.SuspendLayout();
@@ -126,6 +127,7 @@
             this.txtBox_kasaSifre.Name = "txtBox_kasaSifre";
             this.txtBox_kasaSifre.Size = new System.Drawing.Size(150, 22);
             this.txtBox_kasaSifre.TabIndex = 0;
+            this.txtBox_kasaSifre.Text = "memetali1";
             this.txtBox_kasaSifre.Visible = false;
             // 
             // btn_kasaEkle
@@ -139,11 +141,22 @@
             this.btn_kasaEkle.UseVisualStyleBackColor = true;
             this.btn_kasaEkle.Click += new System.EventHandler(this.btn_kasaEkle_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(378, 362);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 58);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "şifreÇözDeneme";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // icerikForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1072, 474);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.grpbox_KasaOzellik);
             this.Controls.Add(this.btn_kullaniciGuncelle);
             this.Controls.Add(this.btn_kasaSil);
@@ -172,5 +185,6 @@
         private System.Windows.Forms.Button btn_onay;
         private System.Windows.Forms.Label lbl_sifre;
         private System.Windows.Forms.TextBox txtBox_kasaSifre;
+        private System.Windows.Forms.Button button1;
     }
 }

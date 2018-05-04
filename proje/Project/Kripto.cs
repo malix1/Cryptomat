@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Security.AccessControl;
 namespace proje
 {
     public class Kripto
@@ -32,12 +33,12 @@ namespace proje
 
             return data;
         }
-        public void Sifrele(string sifrelencekDosya)
+        public void Sifrele(string sifrelencekDosya,string yol,string orjinalYol)
         {
             ue = new UnicodeEncoding();
             byte[] salt = GenerateRandomSalt();
-
-            fsCrypt = new FileStream(sifrelencekDosya + ".crypto", FileMode.Create);
+            
+            fsCrypt = new FileStream(yol+"\\"+sifrelencekDosya, FileMode.Create);
 
             byte[] sifreByte = Encoding.UTF8.GetBytes(anahtar);
 
@@ -55,8 +56,7 @@ namespace proje
             fsCrypt.Write(salt, 0, salt.Length);
 
             cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-
-            fsIn = new FileStream(sifrelencekDosya, FileMode.Open);
+            fsIn = new FileStream(orjinalYol+"\\"+sifrelencekDosya, FileMode.Open);
 
             byte[] buffer = new byte[1000000];
             int read;
@@ -78,26 +78,25 @@ namespace proje
                 fsCrypt.Close();
             }
         }
-        public void sifreyiCoz(string sifresiCozulecekDosya, string dosyaKayitYeri)
+        public void sifreyiCoz(string sifresiCozulecekDosya, string yol,string orjinalYol)
         {
             byte[] sifreByte = Encoding.UTF8.GetBytes(anahtar);
             byte[] salt = new byte[32];
-
-            fsCrypt = new FileStream(sifresiCozulecekDosya, FileMode.Open);
+            fsCrypt = new FileStream(yol+@"\"+sifresiCozulecekDosya, FileMode.Open);
             fsCrypt.Read(salt, 0, salt.Length);
 
             AES = new RijndaelManaged();
             AES.KeySize = 256;
             AES.BlockSize = 128;
             var key = new Rfc2898DeriveBytes(sifreByte, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.Key = key.GetBytes(AES.KeySize / 8);        
             AES.IV = key.GetBytes(AES.BlockSize / 8);
        //     AES.Padding = PaddingMode.PKCS7;
             AES.Mode = CipherMode.CFB;
 
             cs = new CryptoStream(fsCrypt, AES.CreateDecryptor(), CryptoStreamMode.Read);
 
-            fsOut = new FileStream(dosyaKayitYeri, FileMode.Create);
+            fsOut = new FileStream(orjinalYol+"\\"+sifresiCozulecekDosya, FileMode.Create);
 
             int read;
             byte[] buffer = new byte[1000000];

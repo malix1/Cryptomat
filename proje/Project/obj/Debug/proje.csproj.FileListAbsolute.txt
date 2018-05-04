@@ -21,3 +21,6 @@ C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proj
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.KasaOlusturma.resources
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.Properties.Resources.resources
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proje.csproj.GenerateResource.Cache
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\B2.Net.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Newtonsoft.Json.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Newtonsoft.Json.xml

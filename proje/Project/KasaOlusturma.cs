@@ -39,7 +39,7 @@ namespace proje
                 string guvenlik = "";
                 bool hata = false;
                 Kripto kr = new Kripto();
-                Dosya dosya = new Dosya();
+                Klasor dosya = new Klasor();
                 VeriTabaniIslemleri vb = new VeriTabaniIslemleri();
                 string sifre = "";
 
@@ -55,14 +55,14 @@ namespace proje
                 sifre = kr.kasaSifreHashleme(txtbox_kasaSifre.Text);
 
                 // db ye ekleme yapılıyor.
-                string uzanti = @"c\" + txtbox_kasaAdi.Text;
+                string yol = @"c\" + txtbox_kasaAdi.Text;
 
                 // verileri veri tabanı işlemleri sınıfından fonk ile ekliyoruz, eğer hata değeri false gelirse yani herhangi hata oluşmamışsa aşağıdaki işlemleri yapıyoruz.
-                hata = vb.veriEkleme(txtbox_kasaAdi.Text, sifre, uzanti,guvenlik);
+                hata = vb.veriEkleme(txtbox_kasaAdi.Text, sifre, yol,guvenlik);
                 if (hata == false)
                 {
                     // eğer herhangi bir hata alınmamışsa kasa oluşturulup açılıyor.
-                    dosya.Olustur(txtbox_kasaAdi.Text);
+                    dosya.Olustur(txtbox_kasaAdi.Text,guvenlik);
                     dosya.Ac(txtbox_kasaAdi.Text);
                     MessageBox.Show("Kasa oluşturuldu.");
                     this.Close();
