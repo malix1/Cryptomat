@@ -31,7 +31,7 @@
             this.grpbox_Kasalar = new System.Windows.Forms.GroupBox();
             this.listv_Kasalar = new System.Windows.Forms.ListView();
             this.btn_kasaSil = new System.Windows.Forms.Button();
-            this.btn_kullaniciGuncelle = new System.Windows.Forms.Button();
+            this.btn_kasaKitle = new System.Windows.Forms.Button();
             this.grpbox_KasaOzellik = new System.Windows.Forms.GroupBox();
             this.btn_onay = new System.Windows.Forms.Button();
             this.lbl_sifre = new System.Windows.Forms.Label();
@@ -76,15 +76,16 @@
             this.btn_kasaSil.UseVisualStyleBackColor = true;
             this.btn_kasaSil.Click += new System.EventHandler(this.btn_kasaSil_Click);
             // 
-            // btn_kullaniciGuncelle
+            // btn_kasaKitle
             // 
-            this.btn_kullaniciGuncelle.Location = new System.Drawing.Point(851, 431);
-            this.btn_kullaniciGuncelle.Margin = new System.Windows.Forms.Padding(4);
-            this.btn_kullaniciGuncelle.Name = "btn_kullaniciGuncelle";
-            this.btn_kullaniciGuncelle.Size = new System.Drawing.Size(205, 28);
-            this.btn_kullaniciGuncelle.TabIndex = 3;
-            this.btn_kullaniciGuncelle.Text = "Kullanıcı Bilgilerini Güncelle";
-            this.btn_kullaniciGuncelle.UseVisualStyleBackColor = true;
+            this.btn_kasaKitle.Location = new System.Drawing.Point(879, 431);
+            this.btn_kasaKitle.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_kasaKitle.Name = "btn_kasaKitle";
+            this.btn_kasaKitle.Size = new System.Drawing.Size(141, 28);
+            this.btn_kasaKitle.TabIndex = 3;
+            this.btn_kasaKitle.Text = "Kasayı Kilitle";
+            this.btn_kasaKitle.UseVisualStyleBackColor = true;
+            this.btn_kasaKitle.Click += new System.EventHandler(this.btn_kasaKitle_Click);
             // 
             // grpbox_KasaOzellik
             // 
@@ -158,7 +159,7 @@
             this.ClientSize = new System.Drawing.Size(1072, 474);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.grpbox_KasaOzellik);
-            this.Controls.Add(this.btn_kullaniciGuncelle);
+            this.Controls.Add(this.btn_kasaKitle);
             this.Controls.Add(this.btn_kasaSil);
             this.Controls.Add(this.btn_kasaEkle);
             this.Controls.Add(this.grpbox_Kasalar);
@@ -178,7 +179,7 @@
 
         private System.Windows.Forms.GroupBox grpbox_Kasalar;
         private System.Windows.Forms.Button btn_kasaSil;
-        private System.Windows.Forms.Button btn_kullaniciGuncelle;
+        private System.Windows.Forms.Button btn_kasaKitle;
         private System.Windows.Forms.GroupBox grpbox_KasaOzellik;
         private System.Windows.Forms.Button btn_kasaEkle;
         private System.Windows.Forms.ListView listv_Kasalar;

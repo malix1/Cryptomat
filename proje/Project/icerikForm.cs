@@ -15,6 +15,7 @@ namespace proje
     /// </summary>
     public partial class icerikForm : Form
     {
+        string kasaIsmi;
         string path = "";
         Klasor klasor = new Klasor();
         Kripto sifrele = new Kripto();
@@ -28,8 +29,9 @@ namespace proje
         private void icerikForm_Load(object sender, EventArgs e)
         {
             listViewGoruntuleme();
-            btn_kullaniciGuncelle.Enabled = false;
+            btn_kasaKitle.Enabled = false;
             btn_kasaSil.Enabled = false;
+            btn_kasaKitle.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
 
@@ -50,7 +52,8 @@ namespace proje
 
             // herbir resmin boyutu belirleniyor
             iList.ImageSize = new Size(20,20);
-            //    string path = Path.Combine("..","..","..","..","..","..","icons","folder.png");
+            
+            // sabit birşey olsun...... FIXXXXXXXXXXXXX
             string path = @"C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\icons\folder.png";
 
             // dbdeki isimleri listeye atıyoruz.
@@ -71,10 +74,8 @@ namespace proje
         private void btn_kasaEkle_Click(object sender, EventArgs e)
         {
         // fixx   kasaekle butonuna basıldıktan sonra listeyi temizleyip dosya isimlerini tekrardan yazdırmamız gerekiyor.
-        //    listv_Kasalar.Clear();
             KasaOlusturma kForm = new KasaOlusturma();
             kForm.Show();
-     //       listViewVeriEkleme();
         }
 
         private void btn_kasaSil_Click(object sender, EventArgs e)
@@ -100,7 +101,7 @@ namespace proje
         private void btn_onay_Click(object sender, EventArgs e)
         {
             string hashliSifre = "";
-            string kasaIsmi = listv_Kasalar.SelectedItems[0].SubItems[0].Text;
+            kasaIsmi = listv_Kasalar.SelectedItems[0].SubItems[0].Text;
             string girilenSifre = txtBox_kasaSifre.Text;
             
             // girilen şifreyi hash fonksiyonu ile hashliyoruz
@@ -113,8 +114,7 @@ namespace proje
             {
                 klasor.Ac(kasaIsmi);
                 path = @"C:\" + kasaIsmi;
-                dosyaIzle();
-                dosyaIzle2();
+                btn_kasaKitle.Enabled = true;
             }
             else
             {
@@ -128,64 +128,16 @@ namespace proje
 
         private void listv_Kasalar_MouseClick(object sender, MouseEventArgs e)
         {
-            btn_kullaniciGuncelle.Enabled = true;
+            btn_kasaKitle.Enabled = true;
             btn_kasaSil.Enabled = true;
         }
 
         private void listv_Kasalar_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            btn_kullaniciGuncelle.Enabled = false;
+            btn_kasaKitle.Enabled = false;
             btn_kasaSil.Enabled = false;
         }
         #endregion
-
-        private void dosyaIzle()
-        {
-            systemWatcher.Path = path;
-            systemWatcher.IncludeSubdirectories = true;
-            systemWatcher.NotifyFilter = NotifyFilters.Attributes |
-                NotifyFilters.CreationTime |
-                NotifyFilters.FileName |
-                NotifyFilters.LastAccess |
-                NotifyFilters.DirectoryName |
-                NotifyFilters.LastWrite;
-            systemWatcher.Filter = "*.*";
-            systemWatcher.Created += new FileSystemEventHandler(OnCreated);
-            systemWatcher.EnableRaisingEvents = true;
-        }
-        private void dosyaIzle2()
-        {
-            systemWatcher2.Path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            systemWatcher2.IncludeSubdirectories = true;
-            systemWatcher2.NotifyFilter = NotifyFilters.Attributes |
-                NotifyFilters.CreationTime |
-                NotifyFilters.FileName |
-                NotifyFilters.LastAccess |
-                NotifyFilters.DirectoryName |
-                NotifyFilters.LastWrite;
-            systemWatcher2.Filter = "*.*";
-     //       systemWatcher2.Deleted += new FileSystemEventHandler(OnDeleted);
-            systemWatcher2.Changed += new FileSystemEventHandler(OnChanged);
-            systemWatcher2.EnableRaisingEvents = true;
-        }
-
-      
-  /*      public static void OnDeleted(object source,FileSystemEventArgs e)
-        {
-            DirectoryInfo dInfo = new DirectoryInfo(@"c:\sifreler");
-            FileInfo[] fInfo = dInfo.GetFiles("*.*");
-            Kripto kripto = new Kripto();
-            for (int i = 0; i < fInfo.Length; i++)
-            {
-           //     kripto.Sifrele(fInfo[i].Name);
-            }
-            Console.WriteLine(e.ChangeType);
-        }*/
-        public static void OnChanged(object source, FileSystemEventArgs e)
-        {
-            
-            Console.WriteLine(e.FullPath);
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -223,7 +175,7 @@ namespace proje
                 }
             }
         }
-        public static void OnCreated(object source, FileSystemEventArgs e)
+     /*   public static void OnCreated(object source, FileSystemEventArgs e)
         {
             Kripto kripto = new Kripto();
             string path = e.FullPath;
@@ -273,6 +225,43 @@ namespace proje
                 // sifreliyoruz.
                 kripto.Sifrele(fileName, x.Replace("maliv2","sifreler"),x);
             }
+        }*/
+
+        private void btn_kasaKitle_Click(object sender, EventArgs e)
+        {
+            Kripto kripto = new Kripto();
+            string path = @"c:\"+kasaIsmi;
+
+            // atılan şey klasör mü yoksa dosya mı diye bakıyoruz dosya ise;
+            if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                // tüm alt dosyaları diziye atıyoruz.
+                string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+
+                for (int i = 0; i < allFiles.Length; i++)
+                {
+                    // dosyanın uzantısını bölüp diziye atıyoruz.
+                    string[] yol = allFiles[i].Split('\\');
+
+                    // dosya adını çekiyoruz.
+                    string fileName = yol[yol.Length - 1];
+                    // en sondaki elemanı yani dosya ismini siliyoruz.
+                    yol[yol.Length - 1] = "";
+
+                    // diziyi stringe çeviriyoruz.
+                    string x = string.Join("\\", yol);
+
+                    // klasör ismini sifreler ile değiştiriyoruz.
+                    x = x.Replace("maliv2", "sifreler");
+
+                    // uzantı oluşturuyoruz
+                    Directory.CreateDirectory(x);
+
+                    // sifrelemek için fonksiyona veriyoruz.
+                    kripto.Sifrele(fileName, x, x.Replace("sifreler", "maliv2"));
+                }
+            }
+            
         }
     }
 }
