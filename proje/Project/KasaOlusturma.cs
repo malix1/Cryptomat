@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Net.NetworkInformation;
+
 namespace proje
 {
     public partial class KasaOlusturma : Form
@@ -22,6 +24,8 @@ namespace proje
         }
         private void btn_olustur_Click(object sender, EventArgs e)
         {
+            bool hata = false;
+            icerikForm iForm = new icerikForm();
             txtbox_kasaAdi.Text = txtbox_kasaAdi.Text.Trim();
             txtbox_kasaSifre.Text = txtbox_kasaSifre.Text.Trim();
             // textboxların içi boş ise hata mesajı gönderiyoruz.
@@ -37,7 +41,11 @@ namespace proje
             else
             {
                 string guvenlik = "";
-                bool hata = false;
+                var macAdd =
+                (from nic in NetworkInterface.GetAllNetworkInterfaces()
+                    where nic.OperationalStatus == OperationalStatus.Up
+                    select nic.GetPhysicalAddress().ToString()
+                    ).FirstOrDefault();
                 Kripto kr = new Kripto();
                 Klasor dosya = new Klasor();
                 VeriTabaniIslemleri vb = new VeriTabaniIslemleri();
@@ -58,13 +66,13 @@ namespace proje
                 string yol = @"c\" + txtbox_kasaAdi.Text;
 
                 // verileri veri tabanı işlemleri sınıfından fonk ile ekliyoruz, eğer hata değeri false gelirse yani herhangi hata oluşmamışsa aşağıdaki işlemleri yapıyoruz.
-                hata = vb.veriEkleme(txtbox_kasaAdi.Text, sifre, yol,guvenlik);
+                hata = vb.veriEkleme(txtbox_kasaAdi.Text, sifre, yol,guvenlik,macAdd.ToString());
                 if (hata == false)
                 {
                     // eğer herhangi bir hata alınmamışsa kasa oluşturulup açılıyor.
-                    dosya.Olustur(txtbox_kasaAdi.Text,guvenlik);
-                    dosya.Ac(txtbox_kasaAdi.Text);
+                    dosya.Olustur(txtbox_kasaAdi.Text, guvenlik);
                     MessageBox.Show("Kasa oluşturuldu.");
+                    dosya.Ac(txtbox_kasaAdi.Text);
                     this.Close();
                 }
             }

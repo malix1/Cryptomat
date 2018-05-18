@@ -19,14 +19,14 @@ namespace proje
             sqlBaglanti = new SqlConnection(baglanti);
         }
 
-        public bool veriEkleme(string isim,string sifre,string uzanti,string guvenlik)
+        public bool veriEkleme(string isim,string sifre,string uzanti,string guvenlik,string macAdd)
         {
             bool hata = false;
             // bağlantı kapalı ise aç
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
             // sql ekleme komutu
-            string komut = "insert into Kasa(isim,sifre,uzanti,guvenlik)values('" + isim + "','" + sifre + "','" + uzanti + "','" + guvenlik + "')";
+            string komut = "insert into Kasa(isim,sifre,uzanti,guvenlik,mac)values('" + isim + "','" + sifre + "','" + uzanti + "','" + guvenlik +"','"+macAdd+ "')";
             SqlCommand cmd = new SqlCommand(komut, sqlBaglanti);
             try
             {
@@ -69,10 +69,6 @@ namespace proje
                     sqlBaglanti.Close();
             }
         }
-        public void veriGuncelleme(string isim,string sifre,string uzanti)
-        {
-
-        }
         public bool veriKontrol()
         {
             bool tf = false;
@@ -98,19 +94,23 @@ namespace proje
             // listeyi geri döndürüyoruz.
             return kasaIsimleri;
         }
-        public string sifreOkuma(string kasaIsmi)
+        public string[] sifre_guvenlikOkuma(string kasaIsmi)
         {
-            string sifre = "";
+            string[] sifre_guvenlik = new string[3];
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
 
             SqlCommand cmd = new SqlCommand("SELECT * FROM Kasa WHERE isim ='"+kasaIsmi+"'",sqlBaglanti);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
-                sifre = reader[1].ToString();
+            {
+                sifre_guvenlik[0] = reader[1].ToString();
+                sifre_guvenlik[1] = reader[3].ToString();
+                sifre_guvenlik[2] = reader[4].ToString();
+            }
             if (sqlBaglanti.State == ConnectionState.Open)
                 sqlBaglanti.Close();
-            return sifre;
+            return sifre_guvenlik;
         }
 
     }

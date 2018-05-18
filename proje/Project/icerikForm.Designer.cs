@@ -182,10 +182,10 @@
         private System.Windows.Forms.Button btn_kasaKitle;
         private System.Windows.Forms.GroupBox grpbox_KasaOzellik;
         private System.Windows.Forms.Button btn_kasaEkle;
-        private System.Windows.Forms.ListView listv_Kasalar;
         private System.Windows.Forms.Button btn_onay;
         private System.Windows.Forms.Label lbl_sifre;
         private System.Windows.Forms.TextBox txtBox_kasaSifre;
         private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.ListView listv_Kasalar;
     }
 }

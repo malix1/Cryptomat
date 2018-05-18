@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using System.IO;
 namespace proje
 {
-    /// <summary>
-    /// dosyayı kitleme yok
-    /// </summary>
     public partial class icerikForm : Form
     {
         string kasaIsmi;
+        string guvenlik;
         string path = "";
         Klasor klasor = new Klasor();
         Kripto sifrele = new Kripto();
@@ -28,10 +24,9 @@ namespace proje
         }
         private void icerikForm_Load(object sender, EventArgs e)
         {
-            listViewGoruntuleme();
+            listViewVeriEkleme();
             btn_kasaKitle.Enabled = false;
             btn_kasaSil.Enabled = false;
-            btn_kasaKitle.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
 
@@ -43,10 +38,10 @@ namespace proje
             listv_Kasalar.Clear();
             listv_Kasalar.View = View.Details;
             listv_Kasalar.Columns.Add("Kasalar",245);
-            listViewVeriEkleme();
         }
-        private void listViewVeriEkleme()
+        public void listViewVeriEkleme()
         {
+            listViewGoruntuleme();
             List<string> kasaIsimleri = new List<string>();
             ImageList iList = new ImageList();
 
@@ -82,11 +77,13 @@ namespace proje
         {
             string fileName = "";
             //fixxx image list eklenecek, eklenen dosyalar orada görüntülenecek
-            if(MessageBox.Show("Bu kasayı silmek istediğinizden emin misiniz ?","Onay",MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Bu kasayı silmek istediğinizden emin misiniz ?", "Onay", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 fileName = listv_Kasalar.SelectedItems[0].Text;
-                klasor.Sil(@"c:\"+fileName);
+                klasor.Sil(@"c:\" + fileName);
                 vb.veriSilme(fileName);
+                MessageBox.Show("Kasa silindi.");
+                listViewVeriEkleme();
             }
         }
 
@@ -101,16 +98,34 @@ namespace proje
         private void btn_onay_Click(object sender, EventArgs e)
         {
             string hashliSifre = "";
+            string dosyaMac;
             kasaIsmi = listv_Kasalar.SelectedItems[0].SubItems[0].Text;
             string girilenSifre = txtBox_kasaSifre.Text;
             
             // girilen şifreyi hash fonksiyonu ile hashliyoruz
             girilenSifre = sifrele.kasaSifreHashleme(girilenSifre);
             // daha önceden hashlenmiş şifreyi okuyoruz
-            hashliSifre = vb.sifreOkuma(kasaIsmi);
+            hashliSifre = vb.sifre_guvenlikOkuma(kasaIsmi)[0];
+            // güvenlik derecesini alıyoruz
+            guvenlik = vb.sifre_guvenlikOkuma(kasaIsmi)[1];
+
+            dosyaMac = vb.sifre_guvenlikOkuma(kasaIsmi)[2];
+            var pcMac =
+                (from nic in NetworkInterface.GetAllNetworkInterfaces()
+                 where nic.OperationalStatus == OperationalStatus.Up
+                 select nic.GetPhysicalAddress().ToString()
+                 ).FirstOrDefault();
+            
+            // eğer klasörü oluşturan bilgisayarın mac adresi ile dosyaya erişmeye çalışan bilgisayarın mac adresleri farklı ise klasör açılmayacaktır
+            if(pcMac != dosyaMac)
+            {
+                MessageBox.Show("Dosyaya başka bir bilgisayardan erişmeye çalışıyorsunuz. Dosyalar güvenlik nedeni ile silinecektir!");
+
+                return;
+            }
 
             // eğer hashler uyuşmuyorsa şifre yanlış demektir.
-            if(girilenSifre == hashliSifre)
+            if (girilenSifre == hashliSifre)
             {
                 klasor.Ac(kasaIsmi);
                 path = @"C:\" + kasaIsmi;
@@ -128,13 +143,11 @@ namespace proje
 
         private void listv_Kasalar_MouseClick(object sender, MouseEventArgs e)
         {
-            btn_kasaKitle.Enabled = true;
             btn_kasaSil.Enabled = true;
         }
 
         private void listv_Kasalar_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            btn_kasaKitle.Enabled = false;
             btn_kasaSil.Enabled = false;
         }
         #endregion
@@ -165,13 +178,13 @@ namespace proje
                     string x = string.Join("\\", yol);
 
                     //şifreleri sakladığımız klasörün ismini klasör ismi ile değiştiriyoruz.
-                    x = x.Replace("sifreler", "maliv2");
+                    x = x.Replace("sifreler", kasaIsmi);
 
                     // uzantı oluşturuyoruz
                     Directory.CreateDirectory(x);
 
                     // şifreyi çözmek için fonksiyonu çağırıyoruz.
-                    kripto.sifreyiCoz(fileName, x.Replace("maliv2", "sifreler"),x);
+                    kripto.sifreyiCoz(fileName, x.Replace(kasaIsmi, "sifreler"),x,guvenlik);
                 }
             }
         }
@@ -252,13 +265,13 @@ namespace proje
                     string x = string.Join("\\", yol);
 
                     // klasör ismini sifreler ile değiştiriyoruz.
-                    x = x.Replace("maliv2", "sifreler");
+                    x = x.Replace(kasaIsmi, "sifreler");
 
                     // uzantı oluşturuyoruz
                     Directory.CreateDirectory(x);
 
                     // sifrelemek için fonksiyona veriyoruz.
-                    kripto.Sifrele(fileName, x, x.Replace("sifreler", "maliv2"));
+                    kripto.Sifrele(fileName, x, x.Replace("sifreler", kasaIsmi),guvenlik);
                 }
             }
             
