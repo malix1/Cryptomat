@@ -24,3 +24,10 @@ C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\obj\Debug\proj
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\B2.Net.dll
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Newtonsoft.Json.dll
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Newtonsoft.Json.xml
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Dropbox.Api.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.Graph.Core.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.OneDrive.Sdk.Authentication.Desktop.dll
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Dropbox.Api.xml
+C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.xml

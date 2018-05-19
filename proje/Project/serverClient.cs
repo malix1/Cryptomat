@@ -3,35 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using B2Net;
-using B2Net.Models;
-using B2Net.Http;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Forms;
+using Dropbox;
+using Dropbox.Api;
+using System.IO;
+using Dropbox.Api.Files;
 namespace proje 
 {
     class serverClient
     {
-        B2Options options;
-        B2FileList fileList;
-        B2Client client;
-        serverClient()
+        FileStream fs;
+        private const string apiKey = "qvml09a629f0n4d";
+        private const string loopbackHost = "http://127.0.0.1:52475/";
+        private readonly Uri redirectUri = new Uri(loopbackHost + "authorize");
+        private readonly Uri JSRedirectUri = new Uri(loopbackHost+"token");
+        public string accessToken = "CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt";
+        DropboxClient Client = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt");
+
+        
+
+        public async Task Upload(DropboxClient client, string folder, string fileName)
         {
-            options = new B2Options()
-            {
-                AccountId = "5730116172ac",
-                ApplicationKey = "0021f7da64163752b11645d6690755fbd8538bc345",
-                BucketId = "f5279350818116d167320a1c",
-                PersistBucket = true
-            };
-            client = new B2Client(B2Client.Authorize(options));
-            fileList = client.Files.GetList(options.BucketId,100).Result;
-        }
-        void uploadFile()
-        {
-            B2UploadUrl upload = client.Files.GetUploadUrl(options.BucketId).Result;
+            byte[] array = File.ReadAllBytes(@"c:\maliv3\xx.txt");
+            MemoryStream ms = new MemoryStream(array);
+            var updated = await Client.Files.UploadAsync(folder + "/" + fileName, WriteMode.Overwrite.Instance, body: ms);
         }
 
+       public async Task Download(string folder,string file)
+        {
+            
+            using (var response = await Client.Files.DownloadAsync(folder+"/"+file))
+            {
+                var files = await response.GetContentAsStreamAsync();
+                using (FileStream Fs = File.Create(response.Response.Name))
+                {
+                    files.CopyTo(Fs);
+                }
+            }
+        }
+        
     }
 }

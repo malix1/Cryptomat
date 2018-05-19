@@ -6,6 +6,11 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading.Tasks;
+using Dropbox;
+using Dropbox.Api.Files;
+using Dropbox.Api;
+
 namespace proje
 {
     public partial class icerikForm : Form
@@ -15,22 +20,34 @@ namespace proje
         string path = "";
         Klasor klasor = new Klasor();
         Kripto sifrele = new Kripto();
-        FileSystemWatcher systemWatcher = new FileSystemWatcher();
-        FileSystemWatcher systemWatcher2 = new FileSystemWatcher();
+        serverClient sc = new serverClient();
         VeriTabaniIslemleri vb = new VeriTabaniIslemleri();
+        static DropboxClient dc = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt");
         public icerikForm()
         {
             InitializeComponent();
         }
-        private void icerikForm_Load(object sender, EventArgs e)
+        private async  void icerikForm_Load(object sender, EventArgs e)
         {
+            var task = Task.Run((Func<Task>)icerikForm.Run);
             listViewVeriEkleme();
             btn_kasaKitle.Enabled = false;
             btn_kasaSil.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
-
+            //   await sc.Download("/maliv3","xx.txt");
+            await sc.Upload(dc, "/maliv3", "xx.txt");
         }
+        static async Task Run()
+        {
+            using (var dbx = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt"))
+            {
+                var full = await dbx.Users.GetCurrentAccountAsync();
+                
+                Console.WriteLine(full.Email);
+            }
+        }
+
         #region yardımcıMetotlar
 
         public void listViewGoruntuleme()
@@ -154,7 +171,7 @@ namespace proje
 
         private void button1_Click(object sender, EventArgs e)
         {
-            systemWatcher.EnableRaisingEvents = false;
+       //     systemWatcher.EnableRaisingEvents = false;
             Kripto kripto = new Kripto();
             string path = @"c:\sifreler";
 
