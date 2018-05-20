@@ -31,3 +31,6 @@ C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Micr
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.OneDrive.Sdk.Authentication.Desktop.dll
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Dropbox.Api.xml
 C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\bin\Debug\Microsoft.IdentityModel.Clients.ActiveDirectory.xml
+C:\Crypto\Cryptomat\proje\Project\bin\Debug\proje.exe.config
+C:\Crypto\Cryptomat\proje\Project\obj\Debug\proje.exe
+C:\Crypto\Cryptomat\proje\Project\obj\Debug\proje.pdb

@@ -1,1 +1,1 @@
-# Cryptomat
+# CryptoMat
