@@ -35,8 +35,9 @@ namespace proje
             btn_kasaSil.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
-            //   await sc.Download("/maliv3","xx.txt");
-            await sc.Upload(dc, "/maliv3", "xx.txt");
+            await sc.Download(dc,"/maliv3","xx.txt","mali");
+           
+           // await sc.Upload(dc, "/maliv3", "xx.txt");
         }
         static async Task Run()
         {
@@ -66,7 +67,7 @@ namespace proje
             iList.ImageSize = new Size(20,20);
             
             // sabit birşey olsun...... FIXXXXXXXXXXXXX
-            string path = @"C:\Users\po288\OneDrive\Masaüstü\Crypto\Cryptomat\proje\Project\icons\folder.png";
+            string path = @"C:\CryptoMat\Cryptomat\proje\Project\icons\folder.png";
 
             // dbdeki isimleri listeye atıyoruz.
             kasaIsimleri = vb.diziyeVeriOkuma();
@@ -77,6 +78,7 @@ namespace proje
                 listv_Kasalar.Items.Add(kasaIsimleri[i],i);
             }
             listv_Kasalar.SmallImageList = iList;
+            
         }
 
         #endregion
@@ -171,7 +173,6 @@ namespace proje
 
         private void button1_Click(object sender, EventArgs e)
         {
-       //     systemWatcher.EnableRaisingEvents = false;
             Kripto kripto = new Kripto();
             string path = @"c:\sifreler";
 
@@ -203,6 +204,44 @@ namespace proje
                     // şifreyi çözmek için fonksiyonu çağırıyoruz.
                     kripto.sifreyiCoz(fileName, x.Replace(kasaIsmi, "sifreler"),x,guvenlik);
                 }
+            }
+          
+        }
+        private async void bulutaYukle()
+        {
+            string path = @"c:\sifreler";
+            string[] allFiles = Directory.GetFiles(path,"*.*",SearchOption.AllDirectories);
+            for (int i = 0; i < allFiles.Length; i++)
+            {
+                string[] yol = allFiles[i].Split('\\');
+
+                string fileName = yol[yol.Length - 1];
+                yol[yol.Length - 1] = "";
+                yol[0] = "";
+                string x = string.Join("\\",yol);
+
+                x = x.Replace('\\', '/');
+                x = x.Substring(0, x.Length - 1);
+
+                // await sc.Upload(dc,"/maliv3","xx.txt");
+                await sc.Upload(dc,x,fileName,kasaIsmi);
+            }
+        }
+        // kontrol et
+        private async void buluttanIndir()
+        {
+            string path = @"c:\"+kasaIsmi;
+            string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+            for (int i = 0; i < allFiles.Length; i++)
+            {
+                string[] yol = allFiles[i].Split('\\');
+
+                string fileName = yol[yol.Length - 1];
+                yol[yol.Length - 1] = "";
+
+                string x = string.Join("\\", yol);
+
+                await sc.Download(dc,x,fileName,kasaIsmi);
             }
         }
      /*   public static void OnCreated(object source, FileSystemEventArgs e)
@@ -259,6 +298,7 @@ namespace proje
 
         private void btn_kasaKitle_Click(object sender, EventArgs e)
         {
+            bool tf = false;
             Kripto kripto = new Kripto();
             string path = @"c:\"+kasaIsmi;
 
@@ -288,10 +328,14 @@ namespace proje
                     Directory.CreateDirectory(x);
 
                     // sifrelemek için fonksiyona veriyoruz.
-                    kripto.Sifrele(fileName, x, x.Replace("sifreler", kasaIsmi),guvenlik);
+                   tf = kripto.Sifrele(fileName, x, x.Replace("sifreler", kasaIsmi),guvenlik);
                 }
             }
-            
+            if (tf == true)
+                MessageBox.Show("Kasa kilitlendi");
+            bulutaYukle();
+            MessageBox.Show("Yükleme başarılı");
         }
+
     }
 }

@@ -24,22 +24,23 @@ namespace proje
 
         
 
-        public async Task Upload(DropboxClient client, string folder, string fileName)
+        public async Task Upload(DropboxClient client,string folder, string fileName,string kasaIsmi)
         {
-            byte[] array = File.ReadAllBytes(@"c:\maliv3\xx.txt");
+            string orjPath = folder.Replace('/', '\\');
+            byte[] array = File.ReadAllBytes(@"c:"+orjPath+"\\"+fileName);
+            folder = folder.Replace("sifreler",kasaIsmi);
             MemoryStream ms = new MemoryStream(array);
             var updated = await Client.Files.UploadAsync(folder + "/" + fileName, WriteMode.Overwrite.Instance, body: ms);
         }
 
-       public async Task Download(string folder,string file)
+       public async Task Download(DropboxClient client, string folder,string file,string kasaIsmi)
         {
-            
             using (var response = await Client.Files.DownloadAsync(folder+"/"+file))
             {
                 var files = await response.GetContentAsStreamAsync();
                 using (FileStream Fs = File.Create(response.Response.Name))
                 {
-                    files.CopyTo(Fs);
+                   await files.CopyToAsync(Fs);
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace proje
 
             return data;
         }
-        public void Sifrele(string sifrelencekDosya,string yol,string orjinalYol,string guvenlik)
+        public bool Sifrele(string sifrelencekDosya,string yol,string orjinalYol,string guvenlik)
         {
             ue = new UnicodeEncoding();
             byte[] salt = GenerateRandomSalt();
@@ -83,16 +83,17 @@ namespace proje
                     cs.Write(buffer, 0, read);
                 }
                 fsIn.Close();
+                return true;
             }
-            catch
+            catch (Exception e)
             {
-
+                MessageBox.Show("Hata : " + e.Message);
+                return false;
             }
             finally
             {
                 cs.Close();
                 fsCrypt.Close();
-                MessageBox.Show("Kasa kilitlendi.");
             }
         }
         public void sifreyiCoz(string sifresiCozulecekDosya, string yol,string orjinalYol,string guvenlik)
