@@ -65,16 +65,15 @@ namespace proje
 
             // herbir resmin boyutu belirleniyor
             iList.ImageSize = new Size(20,20);
-            
-            // sabit birşey olsun...... FIXXXXXXXXXXXXX
-            string path = @"C:\CryptoMat\Cryptomat\proje\Project\icons\folder.png";
+           
+            string p = Path.Combine(Directory.GetCurrentDirectory(),"..","..","icons","folder.png");
 
             // dbdeki isimleri listeye atıyoruz.
             kasaIsimleri = vb.diziyeVeriOkuma();
 
             for (int i = 0; i < kasaIsimleri.Count; i++)
             {
-                iList.Images.Add(Image.FromFile(path));
+                iList.Images.Add(Image.FromFile(p));
                 listv_Kasalar.Items.Add(kasaIsimleri[i],i);
             }
             listv_Kasalar.SmallImageList = iList;

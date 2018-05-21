@@ -48,3 +48,5 @@ C:\CryptoMat\Cryptomat\proje\Project\obj\Debug\proje.icerikForm.resources
 C:\CryptoMat\Cryptomat\proje\Project\obj\Debug\proje.KasaOlusturma.resources
 C:\CryptoMat\Cryptomat\proje\Project\obj\Debug\proje.Properties.Resources.resources
 C:\CryptoMat\Cryptomat\proje\Project\obj\Debug\proje.csproj.GenerateResource.Cache
+C:\CryptoMat\Cryptomat\proje\Project\bin\Debug\CryptoKasalar.mdf
+C:\CryptoMat\Cryptomat\proje\Project\bin\Debug\CryptoKasalar_log.ldf

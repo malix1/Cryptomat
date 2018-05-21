@@ -15,7 +15,9 @@ namespace proje
         
         public VeriTabaniIslemleri()
         {
-            baglanti = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\po288\\OneDrive\\Belgeler\\Kasa.mdf;Integrated Security=True;Connect Timeout=30";
+            baglanti = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = C:\\CryptoMat\\Cryptomat\\proje\\Project\\CryptoKasalar.mdf; Integrated Security = True";
+
+            //baglanti = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\po288\\OneDrive\\Belgeler\\Kasa.mdf;Integrated Security=True;Connect Timeout=30";
             sqlBaglanti = new SqlConnection(baglanti);
         }
 
@@ -26,7 +28,7 @@ namespace proje
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
             // sql ekleme komutu
-            string komut = "insert into Kasa(isim,sifre,uzanti,guvenlik,mac)values('" + isim + "','" + sifre + "','" + uzanti + "','" + guvenlik +"','"+macAdd+ "')";
+            string komut = "insert into Kasalar(isim,sifre,uzanti,guvenlik,mac)values('" + isim + "','" + sifre + "','" + uzanti + "','" + guvenlik +"','"+macAdd+ "')";
             SqlCommand cmd = new SqlCommand(komut, sqlBaglanti);
             try
             {
@@ -52,7 +54,7 @@ namespace proje
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
 
-            string komut = "DELETE FROM Kasa WHERE isim='"+_isim+"'";
+            string komut = "DELETE FROM Kasalar WHERE isim='"+_isim+"'";
             SqlCommand cmd = new SqlCommand(komut, sqlBaglanti);
             try
             {
@@ -82,7 +84,7 @@ namespace proje
                 sqlBaglanti.Open();
 
             // sql komutu ile tüm veriyi alıyoruz.
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Kasa ",sqlBaglanti);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Kasalar ",sqlBaglanti);
             SqlDataReader reader = cmd.ExecuteReader();
             // verileri okuyup sadece ilk sütundaki değerleri alıyoruz.
             while(reader.Read())
@@ -100,7 +102,7 @@ namespace proje
             if (sqlBaglanti.State == ConnectionState.Closed)
                 sqlBaglanti.Open();
 
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Kasa WHERE isim ='"+kasaIsmi+"'",sqlBaglanti);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Kasalar WHERE isim ='"+kasaIsmi+"'",sqlBaglanti);
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
