@@ -15,19 +15,23 @@ namespace proje
 {
     public partial class icerikForm : Form
     {
+        List<string> yeniDosyalar = new List<string>();
+        List<string> silinenDosyalar = new List<string>();
+        List<string> degisenDosyalar = new List<string>();
         string kasaIsmi;
         string guvenlik;
         string path = "";
         Klasor klasor = new Klasor();
         Kripto sifrele = new Kripto();
         serverClient sc = new serverClient();
+        FileSystemWatcher fsw;
         VeriTabaniIslemleri vb = new VeriTabaniIslemleri();
         static DropboxClient dc = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt");
         public icerikForm()
         {
             InitializeComponent();
         }
-        private async  void icerikForm_Load(object sender, EventArgs e)
+        private void icerikForm_Load(object sender, EventArgs e)
         {
             var task = Task.Run((Func<Task>)icerikForm.Run);
             listViewVeriEkleme();
@@ -35,7 +39,7 @@ namespace proje
             btn_kasaSil.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
-            await sc.Download(dc,"/maliv3","xx.txt","mali");
+        //    await sc.Download(dc,"/maliv3","xx.txt","mali");
            
            // await sc.Upload(dc, "/maliv3", "xx.txt");
         }
@@ -44,8 +48,6 @@ namespace proje
             using (var dbx = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt"))
             {
                 var full = await dbx.Users.GetCurrentAccountAsync();
-                
-                Console.WriteLine(full.Email);
             }
         }
 
@@ -79,6 +81,8 @@ namespace proje
             listv_Kasalar.SmallImageList = iList;
             
         }
+
+
 
         #endregion
 
@@ -148,6 +152,20 @@ namespace proje
                 klasor.Ac(kasaIsmi);
                 path = @"C:\" + kasaIsmi;
                 btn_kasaKitle.Enabled = true;
+                fsw = new FileSystemWatcher(path);
+                fsw.IncludeSubdirectories = true;
+                fsw.NotifyFilter = NotifyFilters.FileName |
+                    NotifyFilters.DirectoryName |
+                    NotifyFilters.Attributes |
+                    NotifyFilters.CreationTime |
+                    NotifyFilters.LastAccess |
+                    NotifyFilters.LastWrite |
+                    NotifyFilters.Size;
+
+                fsw.Filter = "*.*";
+                fsw.EnableRaisingEvents = true;
+                fsw.Created += new FileSystemEventHandler(onCreated);
+                fsw.Deleted += new FileSystemEventHandler(onDeleted);
             }
             else
             {
@@ -167,6 +185,17 @@ namespace proje
         private void listv_Kasalar_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             btn_kasaSil.Enabled = false;
+        }
+
+        private void onCreated(object source, FileSystemEventArgs e)
+        {
+            yeniDosyalar.Add(e.FullPath);
+            Console.WriteLine("eklendi "+e.FullPath);       
+        }
+
+        private void onDeleted(object source,FileSystemEventArgs e)
+        {
+            silinenDosyalar.Add(e.FullPath);
         }
         #endregion
 
@@ -297,6 +326,15 @@ namespace proje
 
         private void btn_kasaKitle_Click(object sender, EventArgs e)
         {
+            DirectoryInfo di = new DirectoryInfo(@"c:\sifreler");
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete();
+            }
             bool tf = false;
             Kripto kripto = new Kripto();
             string path = @"c:\"+kasaIsmi;
@@ -306,7 +344,11 @@ namespace proje
             {
                 // tüm alt dosyaları diziye atıyoruz.
                 string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-
+                if(allFiles.Length==0)
+                {
+                    MessageBox.Show("Kasa boş olamaz");
+                    return;
+                }
                 for (int i = 0; i < allFiles.Length; i++)
                 {
                     // dosyanın uzantısını bölüp diziye atıyoruz.
@@ -335,6 +377,7 @@ namespace proje
             bulutaYukle();
             MessageBox.Show("Yükleme başarılı");
         }
+
 
     }
 }

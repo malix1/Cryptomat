@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Windows.Forms;
+using System.IO;
 namespace proje
 {
     class VeriTabaniIslemleri
@@ -15,7 +16,8 @@ namespace proje
         
         public VeriTabaniIslemleri()
         {
-            baglanti = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = C:\\CryptoMat\\Cryptomat\\proje\\Project\\CryptoKasalar.mdf; Integrated Security = True";
+            DirectoryInfo dbInfo = Directory.GetParent(Path.Combine(Directory.GetCurrentDirectory(),".."));
+            baglanti = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = "+dbInfo.FullName+"\\CryptoKasalar.mdf; Integrated Security = True";
 
             //baglanti = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\po288\\OneDrive\\Belgeler\\Kasa.mdf;Integrated Security=True;Connect Timeout=30";
             sqlBaglanti = new SqlConnection(baglanti);

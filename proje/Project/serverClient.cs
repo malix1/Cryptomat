@@ -44,6 +44,11 @@ namespace proje
                 }
             }
         }
+
+        public void Delete(string path)
+        {
+            DeleteArg da = new DeleteArg(path);
+        }
         
     }
 }
