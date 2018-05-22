@@ -19,7 +19,6 @@ namespace proje
             DirectoryInfo dbInfo = Directory.GetParent(Path.Combine(Directory.GetCurrentDirectory(),".."));
             baglanti = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = "+dbInfo.FullName+"\\CryptoKasalar.mdf; Integrated Security = True";
 
-            //baglanti = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\po288\\OneDrive\\Belgeler\\Kasa.mdf;Integrated Security=True;Connect Timeout=30";
             sqlBaglanti = new SqlConnection(baglanti);
         }
 
