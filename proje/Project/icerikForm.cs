@@ -15,16 +15,13 @@ namespace proje
 {
     public partial class icerikForm : Form
     {
-        List<string> yeniDosyalar = new List<string>();
-        List<string> silinenDosyalar = new List<string>();
-        List<string> degisenDosyalar = new List<string>();
+        List<string> klasorunIlkHali = new List<string>();
         string kasaIsmi;
         string guvenlik;
         string path = "";
         Klasor klasor = new Klasor();
         Kripto sifrele = new Kripto();
         serverClient sc = new serverClient();
-        FileSystemWatcher fsw;
         VeriTabaniIslemleri vb = new VeriTabaniIslemleri();
         static DropboxClient dc = new DropboxClient("CtkHQuOTCVAAAAAAAAAACKI7ZNCmgYPCGOJzN1lPAqwY2V0ymUwHCQnOUaI77xOt");
         public icerikForm()
@@ -39,6 +36,9 @@ namespace proje
             btn_kasaSil.Enabled = false;
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
+
+            // FIXXXX
+            buluttanIndir("maliv4");
         //    await sc.Download(dc,"/maliv3","xx.txt","mali");
            
            // await sc.Upload(dc, "/maliv3", "xx.txt");
@@ -141,7 +141,7 @@ namespace proje
             // eğer klasörü oluşturan bilgisayarın mac adresi ile dosyaya erişmeye çalışan bilgisayarın mac adresleri farklı ise klasör açılmayacaktır
             if(pcMac != dosyaMac)
             {
-                MessageBox.Show("Dosyaya başka bir bilgisayardan erişmeye çalışıyorsunuz. Dosyalar güvenlik nedeni ile silinecektir!");
+                MessageBox.Show("Dosyaya başka bir bilgisayardan erişelemez!");
 
                 return;
             }
@@ -150,22 +150,24 @@ namespace proje
             if (girilenSifre == hashliSifre)
             {
                 klasor.Ac(kasaIsmi);
+
                 path = @"C:\" + kasaIsmi;
                 btn_kasaKitle.Enabled = true;
-                fsw = new FileSystemWatcher(path);
-                fsw.IncludeSubdirectories = true;
-                fsw.NotifyFilter = NotifyFilters.FileName |
-                    NotifyFilters.DirectoryName |
-                    NotifyFilters.Attributes |
-                    NotifyFilters.CreationTime |
-                    NotifyFilters.LastAccess |
-                    NotifyFilters.LastWrite |
-                    NotifyFilters.Size;
+                klasorunIlkHali = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
+                /*       fsw = new FileSystemWatcher(path);
+                       fsw.IncludeSubdirectories = true;
+                       fsw.NotifyFilter = NotifyFilters.FileName |
+                           NotifyFilters.DirectoryName |
+                           NotifyFilters.Attributes |
+                           NotifyFilters.CreationTime |
+                           NotifyFilters.LastAccess |
+                           NotifyFilters.LastWrite |
+                           NotifyFilters.Size;
 
-                fsw.Filter = "*.*";
-                fsw.EnableRaisingEvents = true;
-                fsw.Created += new FileSystemEventHandler(onCreated);
-                fsw.Deleted += new FileSystemEventHandler(onDeleted);
+                       fsw.Filter = "*.*";
+                       fsw.EnableRaisingEvents = true;
+                       fsw.Created += new FileSystemEventHandler(onCreated);
+                       fsw.Deleted += new FileSystemEventHandler(onDeleted);*/
             }
             else
             {
@@ -187,7 +189,7 @@ namespace proje
             btn_kasaSil.Enabled = false;
         }
 
-        private void onCreated(object source, FileSystemEventArgs e)
+     /*   private void onCreated(object source, FileSystemEventArgs e)
         {
             yeniDosyalar.Add(e.FullPath);
             Console.WriteLine("eklendi "+e.FullPath);       
@@ -196,7 +198,7 @@ namespace proje
         private void onDeleted(object source,FileSystemEventArgs e)
         {
             silinenDosyalar.Add(e.FullPath);
-        }
+        }*/
         #endregion
 
         private void button1_Click(object sender, EventArgs e)
@@ -208,9 +210,9 @@ namespace proje
             if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
             {
                 // tüm alt dosyaları diziye atıyoruz.
-                string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-
-                for (int i = 0; i < allFiles.Length; i++)
+                List<string>allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
+               
+                for (int i = 0; i < allFiles.Count; i++)
                 {
                     // dosyanın uzantısını bölüp diziye atıyoruz.
                     string[] yol = allFiles[i].Split('\\');
@@ -235,6 +237,7 @@ namespace proje
             }
           
         }
+
         private async void bulutaYukle()
         {
             string path = @"c:\sifreler";
@@ -256,22 +259,28 @@ namespace proje
             }
         }
         // kontrol et
-        private async void buluttanIndir()
+        private async void buluttanIndir(string kasa)
         {
-            string path = @"c:\"+kasaIsmi;
-            string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-            for (int i = 0; i < allFiles.Length; i++)
+            string yedekYol = Directory.GetCurrentDirectory() + "\\yedek";
+            Dictionary<string,string> dosyalar = yedekIndirme("maliv4");
+
+            foreach (var path in dosyalar)
             {
-                string[] yol = allFiles[i].Split('\\');
-
-                string fileName = yol[yol.Length - 1];
-                yol[yol.Length - 1] = "";
-
-                string x = string.Join("\\", yol);
-
-                await sc.Download(dc,x,fileName,kasaIsmi);
+                string y = path.Key.Replace("\\","/");
+                await sc.Download(dc,y,"",kasa);
+               
             }
+            foreach (var path in dosyalar)
+            {
+                string[] dosyaAdi = path.Key.Split('\\');
+
+
+                // araştır çalışmıyor
+          //      File.Move(Directory.GetCurrentDirectory() +"\\"+dosyaAdi[dosyaAdi.Length-1] , yedekYol+dosyaAdi[dosyaAdi.Length-2]);
+            }
+            
         }
+
      /*   public static void OnCreated(object source, FileSystemEventArgs e)
         {
             Kripto kripto = new Kripto();
@@ -326,30 +335,59 @@ namespace proje
 
         private void btn_kasaKitle_Click(object sender, EventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(@"c:\sifreler");
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete();
-            }
             bool tf = false;
             Kripto kripto = new Kripto();
-            string path = @"c:\"+kasaIsmi;
+            string path = @"c:\" + kasaIsmi;
+
+            string txtPath = Directory.GetCurrentDirectory() + "\\" + kasaIsmi + ".txt";
+
+            if(File.Exists(txtPath))
+            {
+                File.Delete(txtPath);
+            }
+            StreamWriter writer = new StreamWriter(kasaIsmi+".txt");
+
+            // sifreler klasöründeki tüm eski dosyaları siliyoruz.
+            DirectoryInfo dirInfo = new DirectoryInfo(@"c:\sifreler");
+            EmptyFolder(dirInfo);
+            Directory.CreateDirectory(@"c:\sifreler");
 
             // atılan şey klasör mü yoksa dosya mı diye bakıyoruz dosya ise;
             if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
             {
                 // tüm alt dosyaları diziye atıyoruz.
-                string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-                if(allFiles.Length==0)
+                List<string> allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
+                if(allFiles.Count==0)
                 {
-                    MessageBox.Show("Kasa boş olamaz");
+                    MessageBox.Show("Kasa boş olduğu için herhangi bir şifreleme işlemi yapılamayacaktır.");
                     return;
                 }
-                for (int i = 0; i < allFiles.Length; i++)
+                // uzantıların ilk C harfini küçük harf yapıyoruz.
+                for (int i = 0; i < allFiles.Count; i++)
+                {
+                    allFiles[i] = 'c' + allFiles[i].Remove(0, 1);   
+                }
+                for (int i = 0; i < klasorunIlkHali.Count; i++)
+                {
+                    klasorunIlkHali[i] = 'c' + klasorunIlkHali[i].Remove(0, 1);
+                }
+
+                // önceden klasörde olan dosyaları şifrelemeye gerek yok, bunun için burada önceden dosyada olan uzantıları listeden çıkartıyoruz.
+                for (int i = 0; i < allFiles.Count; i++)
+                {
+                    for (int j = 0; j < klasorunIlkHali.Count; j++)
+                    {
+                        if (allFiles[i] == klasorunIlkHali[j])
+                            allFiles.Remove(allFiles[i]);
+                        if(allFiles.Count == 0)
+                        {
+                            allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < allFiles.Count; i++)
                 {
                     // dosyanın uzantısını bölüp diziye atıyoruz.
                     string[] yol = allFiles[i].Split('\\');
@@ -370,14 +408,69 @@ namespace proje
 
                     // sifrelemek için fonksiyona veriyoruz.
                    tf = kripto.Sifrele(fileName, x, x.Replace("sifreler", kasaIsmi),guvenlik);
+
+                    string text = allFiles[i];
+                    writer.WriteLine(text);
+
+                }
+                writer.Close();
+                if (tf == true)
+                    MessageBox.Show("Kasa kilitlendi");
+                if (allFiles.Count != 0)
+                {
+                    bulutaYukle();
+                    MessageBox.Show("Yükleme başarılı");
                 }
             }
-            if (tf == true)
-                MessageBox.Show("Kasa kilitlendi");
-            bulutaYukle();
-            MessageBox.Show("Yükleme başarılı");
+
         }
 
+        private Dictionary<string,string> yedekIndirme(string kasa)
+        {
+            string yedekPath = Directory.GetCurrentDirectory() + "\\yedek";
+            Directory.CreateDirectory(yedekPath);
+            List<string> allFiles = new List<string>();
 
+            string txtPath = Directory.GetCurrentDirectory() + "\\" + kasa + ".txt";
+            StreamReader reader = new StreamReader(txtPath);
+
+            Dictionary<string,string> newFilePats = new Dictionary<string,string>();
+
+            while (!reader.EndOfStream)
+            {
+                allFiles.Add(reader.ReadLine());
+            }
+
+            for (int i = 0; i < allFiles.Count; i++)
+            {
+                string[] path = allFiles[i].Split('\\');
+                for (int j = 0; j < path.Length; j++)
+                {
+                    if(path[j]!=kasa)
+                    {
+                        path[j] = "";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                newFilePats.Add(string.Join("\\", path),allFiles[i]);
+            }
+            return newFilePats;
+        }
+
+        private void EmptyFolder(DirectoryInfo directoryInfo)
+        {
+            foreach (FileInfo file in directoryInfo.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
+            {
+                EmptyFolder(dir);
+            }
+            Directory.Delete(directoryInfo.FullName); 
+        }
     }
 }

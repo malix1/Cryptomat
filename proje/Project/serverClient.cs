@@ -35,12 +35,12 @@ namespace proje
 
        public async Task Download(DropboxClient client, string folder,string file,string kasaIsmi)
         {
-            using (var response = await Client.Files.DownloadAsync(folder+"/"+file))
+            using (var response = await Client.Files.DownloadAsync(folder))
             {
                 var files = await response.GetContentAsStreamAsync();
                 using (FileStream Fs = File.Create(response.Response.Name))
                 {
-                   await files.CopyToAsync(Fs);
+                    await files.CopyToAsync(Fs);
                 }
             }
         }
