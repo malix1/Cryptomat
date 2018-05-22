@@ -180,12 +180,12 @@ namespace proje
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string kasaAdi = "maliv4";
+            string kasaAdi = "maliv5";
             Kripto kripto = new Kripto();
 
+            string decryptKlasorYol = @"c:\decryptKlasor";
             string path = Directory.GetCurrentDirectory()+"\\yedek\\"+kasaAdi;
 
-            // DÜZELT YEDEKTEN ÇEKTİKTEN SONRA ŞİFREYİ ÇÖZMEMİZ GEREKİYOR ÖNCESİNDE C:\SİFRELER KLASÖRÜNDEN ÇÖZÜYORDUK....
             // path klasör mü diye kontrol yapılıyor.
             if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
             {
@@ -196,7 +196,16 @@ namespace proje
                 {
                     // dosyanın uzantısını bölüp diziye atıyoruz.
                     string[] yol = allFiles[i].Split('\\');
-
+                    string yol2 = string.Join("\\",yol);
+                    for (int j = 0; j < yol.Length; j++)
+                    {
+                        if (yol[j] != kasaAdi)
+                        {
+                            yol[j] = "";
+                        }
+                        else
+                            break;
+                    }
                     // dosya adını çekiyoruz.
                     string fileName = yol[yol.Length - 1];
                     // en sondaki elemanı yani dosya ismini siliyoruz.
@@ -204,15 +213,14 @@ namespace proje
 
                     // diziyi stringe çeviriyoruz.
                     string x = string.Join("\\", yol);
+                    x = x.Substring(x.IndexOf(kasaAdi));
 
-                    //şifreleri sakladığımız klasörün ismini klasör ismi ile değiştiriyoruz.
-                    x = x.Replace("sifreler", kasaAdi);
-
+                    x = Path.Combine(decryptKlasorYol + "\\" + x);
                     // uzantı oluşturuyoruz
                     Directory.CreateDirectory(x);
 
                     // şifreyi çözmek için fonksiyonu çağırıyoruz.
-                    kripto.sifreyiCoz(fileName, x.Replace(kasaAdi, "sifreler"), x, guvenlik);
+                    kripto.sifreyiCoz(fileName,yol2 , x, guvenlik);
                 }
             }
         }

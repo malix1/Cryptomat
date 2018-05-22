@@ -100,7 +100,7 @@ namespace proje
         {
             byte[] sifreByte = Encoding.UTF8.GetBytes(anahtar);
             byte[] salt = new byte[32];
-            fsCrypt = new FileStream(yol+@"\"+sifresiCozulecekDosya, FileMode.Open);
+            fsCrypt = new FileStream(yol, FileMode.Open);
             fsCrypt.Read(salt, 0, salt.Length);
 
             AES = new RijndaelManaged();
