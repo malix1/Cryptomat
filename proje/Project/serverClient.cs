@@ -45,9 +45,15 @@ namespace proje
             }
         }
 
-        public void Delete(string path)
+        public async Task Delete(DropboxClient client,string folder,string file,string kasaIsmi)
         {
-            DeleteArg da = new DeleteArg(path);
+            DeleteResult response;
+            if(file =="")
+                 response = await client.Files.DeleteV2Async(folder);
+            else
+            {
+                response = await client.Files.DeleteV2Async(folder+"/"+file);
+            }
         }
         
     }

@@ -1,6 +1,0 @@
-c:\maliv5\japanese.txt
-c:\maliv5\rirekissho.doc
-c:\maliv5\タイローンなんかこわくない.pdf
-c:\maliv5\denemex\japanese.txt
-c:\maliv5\denemex\rirekissho.doc
-c:\maliv5\denemex\タイローンなんかこわくない.pdf

@@ -1,10 +1,2 @@
+c:\maliv4\0076-021.jpg
 c:\maliv4\Yeni Metin Belgesixx.txt
-c:\maliv4\graph2\graph2.cbp
-c:\maliv4\graph2\graph2.depend
-c:\maliv4\graph2\graph2.layout
-c:\maliv4\graph2\main.cpp
-c:\maliv4\graph2\main.exe
-c:\maliv4\graph2\main.o
-c:\maliv4\graph2\malidene.txt
-c:\maliv4\graph2\bin\Debug\graph2.exe
-c:\maliv4\graph2\obj\Debug\main.o

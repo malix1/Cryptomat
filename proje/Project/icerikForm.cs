@@ -16,6 +16,7 @@ namespace proje
     public partial class icerikForm : Form
     {
         List<string> klasorunIlkHali = new List<string>();
+        List<string> buluttanSilinecekler = new List<string>();
         string kasaIsmi;
         string guvenlik;
         string path = "";
@@ -37,7 +38,6 @@ namespace proje
             Path.Combine(@"c:\sifreler");
             Directory.CreateDirectory(@"C:\sifreler");
 
-        //    buluttanIndir("maliv4");
         }
         static async Task Run()
         {
@@ -89,7 +89,14 @@ namespace proje
             {
                 EmptyFolder(dir);
             }
-            Directory.Delete(directoryInfo.FullName);
+            try
+            {
+                Directory.Delete(directoryInfo.FullName);
+            }
+            catch(IOException hata)
+            {
+                MessageBox.Show(hata.Message);
+            }
         }
 
         private void WriteTxtFile(string kasa)
@@ -118,13 +125,36 @@ namespace proje
 
         private void btn_kasaSil_Click(object sender, EventArgs e)
         {
+
             string fileName = "";
-            //fixxx image list eklenecek, eklenen dosyalar orada görüntülenecek
             if (MessageBox.Show("Bu kasayı silmek istediğinizden emin misiniz ?", "Onay", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 fileName = listv_Kasalar.SelectedItems[0].Text;
-                klasor.Sil(@"c:\" + fileName);
+
+                string txtPath = Directory.GetCurrentDirectory() +"\\"+ fileName + ".txt";
+
+                DirectoryInfo dir = new DirectoryInfo(@"c:\"+fileName);
+                EmptyFolder(dir);
+
                 vb.veriSilme(fileName);
+
+                if(File.Exists(txtPath) == true)
+                {
+                    StreamReader reader = new StreamReader(txtPath);
+                    List<string> files = new List<string>();
+                    while(reader.EndOfStream == false)
+                    {
+                        files.Add(reader.ReadLine());
+                    }
+                    reader.Close();
+                    if (files.Count != 0)
+                    {
+                        buluttanSil(fileName);
+                    }
+                    File.Delete(txtPath);
+                }
+
+             
                 MessageBox.Show("Kasa silindi.");
                 listViewVeriEkleme();
             }
@@ -178,61 +208,13 @@ namespace proje
             txtBox_kasaSifre.Text = "";
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string kasaAdi = "maliv5";
-            Kripto kripto = new Kripto();
-
-            string decryptKlasorYol = @"c:\decryptKlasor";
-            string path = Directory.GetCurrentDirectory()+"\\yedek\\"+kasaAdi;
-
-            // path klasör mü diye kontrol yapılıyor.
-            if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                // tüm alt dosyaları diziye atıyoruz.
-                List<string> allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
-
-                for (int i = 0; i < allFiles.Count; i++)
-                {
-                    // dosyanın uzantısını bölüp diziye atıyoruz.
-                    string[] yol = allFiles[i].Split('\\');
-                    string yol2 = string.Join("\\",yol);
-                    for (int j = 0; j < yol.Length; j++)
-                    {
-                        if (yol[j] != kasaAdi)
-                        {
-                            yol[j] = "";
-                        }
-                        else
-                            break;
-                    }
-                    // dosya adını çekiyoruz.
-                    string fileName = yol[yol.Length - 1];
-                    // en sondaki elemanı yani dosya ismini siliyoruz.
-                    yol[yol.Length - 1] = "";
-
-                    // diziyi stringe çeviriyoruz.
-                    string x = string.Join("\\", yol);
-                    x = x.Substring(x.IndexOf(kasaAdi));
-
-                    x = Path.Combine(decryptKlasorYol + "\\" + x);
-                    // uzantı oluşturuyoruz
-                    Directory.CreateDirectory(x);
-
-                    // şifreyi çözmek için fonksiyonu çağırıyoruz.
-                    kripto.sifreyiCoz(fileName,yol2 , x, guvenlik);
-                }
-            }
-        }
-
-        private void btn_kasaKitle_Click(object sender, EventArgs e)
+        private async void btn_kasaKitle_Click(object sender, EventArgs e)
         {
             string sifrelerYol = @"c:\sifreler";
             bool tf = false;
             Kripto kripto = new Kripto();
             string path = @"c:\" + kasaIsmi;
             string txtPath = Directory.GetCurrentDirectory() + "\\" + kasaIsmi + ".txt";
-
 
             // sifreler klasöründeki tüm eski dosyaları siliyoruz.
             DirectoryInfo dirInfo = new DirectoryInfo(sifrelerYol);
@@ -259,19 +241,35 @@ namespace proje
                     klasorunIlkHali[i] = 'c' + klasorunIlkHali[i].Remove(0, 1);
                 }
 
-                // önceden klasörde olan dosyaları şifrelemeye gerek yok, bunun için burada önceden dosyada olan uzantıları listeden çıkartıyoruz.
-                for (int i = 0; i < allFiles.Count; i++)
+                // önceden klasörde olup daha sonra klasörde olmayan dosyaları siliyoruz.
+                for (int i = 0; i < klasorunIlkHali.Count; i++)
                 {
-                    for (int j = 0; j < klasorunIlkHali.Count; j++)
+                    bool varYok = false;
+                    for (int j = 0; j < allFiles.Count; j++)
                     {
-                        if (allFiles[i] == klasorunIlkHali[j])
-                            allFiles.Remove(allFiles[i]);
-                        if (allFiles.Count == 0)
+                        if(klasorunIlkHali[i] == allFiles[j])
                         {
-                            allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
-                            break;
+                            varYok = true;
                         }
                     }
+                    if (varYok == false)
+                        buluttanSilinecekler.Add(klasorunIlkHali[i]);
+                }
+
+                // düzelt
+                for (int i = 0; i < buluttanSilinecekler.Count; i++)
+                {
+                    string[] yol = buluttanSilinecekler[i].Split('\\');
+                    string fileName = yol[yol.Length - 1];
+                    yol[yol.Length - 1] = "";
+                    yol[0] = "";
+
+                    string x = string.Join("\\",yol);
+                    x = x.Replace('\\', '/');
+                    x = x.Substring(0, x.Length - 1);
+
+                    var sil = sc.Delete(dc, x, fileName, "");
+                    await sil;
                 }
 
                 for (int i = 0; i < allFiles.Count; i++)
@@ -303,7 +301,8 @@ namespace proje
                     MessageBox.Show("Kasa kilitlendi");
                 if (allFiles.Count != 0)
                 {
-                    bulutaYukle();
+                    var taskYukle = bulutaYukle();
+                    await taskYukle;
                     MessageBox.Show("Yükleme başarılı");
                 }
             }
@@ -328,64 +327,100 @@ namespace proje
 
         }
 
+        private async void btn_yedekAl_Click(object sender, EventArgs e)
+        {
+            string decryptKlasorYol = @"c:\decryptKlasor";
+            Kripto kripto = new Kripto();
+            List<string> kasaAdlari = new List<string>();
+            string kasaAdi = "";
 
-        /*   public static void OnCreated(object source, FileSystemEventArgs e)
-           {
-               Kripto kripto = new Kripto();
-               string path = e.FullPath;
+            kasaAdlari = vb.diziyeVeriOkuma();
 
-               // atılan şey klasör mü yoksa dosya mı diye bakıyoruz dosya ise;
-               if ((File.GetAttributes(e.FullPath) & FileAttributes.Directory) == FileAttributes.Directory)
-               {
-                   // tüm alt dosyaları diziye atıyoruz.
-                   string[] allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+            // girilen string boş mu diye bakılıyor..
+            if (txt_yedekKasaAdi.Text == string.Empty)
+            {
+                MessageBox.Show("Lütfen bir kasa ismi giriniz.");
+                return;
+            }
 
-                   for (int i = 0; i < allFiles.Length; i++)
-                   {
-                       // dosyanın uzantısını bölüp diziye atıyoruz.
-                       string[] yol = allFiles[i].Split('\\');
+            // girilen kasa adi gerçekte var mı diye kontrol ediliyor.
+            for (int i = 0; i < kasaAdlari.Count; i++)
+            {
+                if(kasaAdlari[i]==txt_yedekKasaAdi.Text)
+                {
+                    kasaAdi = txt_yedekKasaAdi.Text;
+                }
+            }
+            // yok ise hata döndürülüyor
+            if(kasaAdi == string.Empty)
+            {
+                MessageBox.Show("Geçerli kasa adı giriniz.");
+                return;
+            }
 
-                       // dosya adını çekiyoruz.
-                       string fileName = yol[yol.Length - 1];
-                       // en sondaki elemanı yani dosya ismini siliyoruz.
-                       yol[yol.Length - 1] = "";
+        //    string yedekYol = Directory.GetCurrentDirectory() + "\\yedek\\"+kasaAdi;
 
-                       // diziyi stringe çeviriyoruz.
-                       string x = string.Join("\\", yol);
+            // eğer önceden bu dosya oluşturulmuşsa silinir.
+            if (Directory.Exists(decryptKlasorYol))
+            {
+                DirectoryInfo dir = new DirectoryInfo(decryptKlasorYol);
+                EmptyFolder(dir);
+            }
 
-                       // klasör ismini sifreler ile değiştiriyoruz.
-                       x = x.Replace("maliv2", "sifreler");
 
-                       // uzantı oluşturuyoruz
-                       Directory.CreateDirectory(x);
+            // buluttan indirme işlemi
+            var taskIndir = buluttanIndir(kasaAdi);
+            await taskIndir;
 
-                       // sifrelemek için fonksiyona veriyoruz.
-                       kripto.Sifrele(fileName, x, x.Replace("sifreler", "maliv2"));
-                   }
-               }
-               // dosya ise;
-               else
-               {
-                   // yolu bölüyoruz.
-                   string[] yol = e.FullPath.Split('\\');
+            /// buluttan indirlen dosyaların şifreleri çözülüyor..
+            string path = Directory.GetCurrentDirectory() + "\\yedek\\" + kasaAdi;
 
-                   string fileName = yol[yol.Length - 1];
-                   // dosya ismini diziden çıkartıyoruz.
-                   yol[yol.Length - 1] = "";
+            // path klasör mü diye kontrol yapılıyor.
+            if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                // tüm alt dosyaları diziye atıyoruz.
+                List<string> allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories).ToList();
 
-                   // diziyi string yapıyoruz.
-                   string x = string.Join("\\",yol);
+                for (int i = 0; i < allFiles.Count; i++)
+                {
+                    // dosyanın uzantısını bölüp diziye atıyoruz.
+                    string[] yol = allFiles[i].Split('\\');
+                    string yol2 = string.Join("\\", yol);
+                    for (int j = 0; j < yol.Length; j++)
+                    {
+                        if (yol[j] != kasaAdi)
+                        {
+                            yol[j] = "";
+                        }
+                        else
+                            break;
+                    }
+                    // dosya adını çekiyoruz.
+                    string fileName = yol[yol.Length - 1];
+                    // en sondaki elemanı yani dosya ismini siliyoruz.
+                    yol[yol.Length - 1] = "";
 
-                   // sifreliyoruz.
-                   kripto.Sifrele(fileName, x.Replace("maliv2","sifreler"),x);
-               }
-           }*/
+                    // diziyi stringe çeviriyoruz.
+                    string x = string.Join("\\", yol);
+                    x = x.Substring(x.IndexOf(kasaAdi));
+
+                    x = Path.Combine(decryptKlasorYol + "\\" + x);
+                    // uzantı oluşturuyoruz
+                    Directory.CreateDirectory(x);
+
+                    // şifreyi çözmek için fonksiyonu çağırıyoruz.
+                    kripto.sifreyiCoz(fileName, yol2, x, guvenlik);
+                }
+                MessageBox.Show("Yedek alınmıştır");
+                System.Diagnostics.Process.Start(decryptKlasorYol);
+            }
+        }
 
         #endregion
 
         #region  bulut işlemleri
 
-        private async void bulutaYukle()
+        private async Task bulutaYukle()
         {
             string path = @"c:\sifreler";
             string[] allFiles = Directory.GetFiles(path,"*.*",SearchOption.AllDirectories);
@@ -406,11 +441,10 @@ namespace proje
             }
         }
 
-
-        private async void buluttanIndir(string kasa)
+        private async Task buluttanIndir(string kasa)
         {
             string yedekYol = Directory.GetCurrentDirectory() + "\\yedek";
-            Dictionary<string,string> dosyalar = yedekIndirme("maliv4");
+            Dictionary<string,string> dosyalar = yedekIndirme(kasa);
             string y = "";
 
 
@@ -425,21 +459,37 @@ namespace proje
                 dosya[dosya.Length - 1] = "";
 
                 string dir = yedekYol+string.Join("\\", dosya);
-                Directory.CreateDirectory(dir);
+                if(Directory.Exists(dir)==false)
+                    Directory.CreateDirectory(dir);
 
-                File.Move(Directory.GetCurrentDirectory() + "\\" + dosyaAdi, dir + dosyaAdi);
-                
+                try
+                {
+                    File.Move(Directory.GetCurrentDirectory() + "\\" + dosyaAdi, dir + dosyaAdi);
+                }
+                catch(IOException)
+                {
+                    File.Delete(dir+dosyaAdi);
+                    File.Move(Directory.GetCurrentDirectory()+"\\"+dosyaAdi,dir+dosyaAdi);
+                }
             }
         }
-      
+        
+        private async void buluttanSil(string kasa)
+        {
+            await sc.Delete(dc,"/"+kasa,"","");
+        }
+
         private Dictionary<string,string> yedekIndirme(string kasa)
         {
             string yedekPath = Directory.GetCurrentDirectory() + "\\yedek";
-            Directory.CreateDirectory(yedekPath);
+
+            if(Directory.Exists(yedekPath)==false)
+                Directory.CreateDirectory(yedekPath);
             List<string> allFiles = new List<string>();
 
             string txtPath = Directory.GetCurrentDirectory() + "\\" + kasa + ".txt";
 
+            // eğer txtpath dosyası silinmiş ise , orjinal klasöre gidilip dosya isimleri alınıyorç
             if(File.Exists(txtPath) == false)
             {
                 WriteTxtFile(kasa);
@@ -447,12 +497,13 @@ namespace proje
 
             StreamReader reader = new StreamReader(txtPath);
            
-            Dictionary<string,string> newFilePats = new Dictionary<string,string>();
+            Dictionary<string,string> newFilePaths = new Dictionary<string,string>();
 
             while (!reader.EndOfStream)
             {
                 allFiles.Add(reader.ReadLine());
             }
+            reader.Close();
 
             for (int i = 0; i < allFiles.Count; i++)
             {
@@ -468,9 +519,9 @@ namespace proje
                         break;
                     }
                 }
-                newFilePats.Add(string.Join("\\", path),allFiles[i]);
+                newFilePaths.Add(string.Join("\\", path),allFiles[i]);
             }
-            return newFilePats;
+            return newFilePaths;
         }
 
         #endregion
