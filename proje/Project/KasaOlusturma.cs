@@ -14,6 +14,8 @@ namespace proje
 {
     public partial class KasaOlusturma : Form
     {
+        public delegate void  KasaOlusturulduEventHandler();
+        public event KasaOlusturulduEventHandler kasaOlustu;
         public KasaOlusturma()
         {
             InitializeComponent();
@@ -72,6 +74,7 @@ namespace proje
                     // eğer herhangi bir hata alınmamışsa kasa oluşturulup açılıyor.
                     dosya.Olustur(txtbox_kasaAdi.Text, guvenlik);
                     MessageBox.Show("Kasa oluşturuldu.");
+                    kasaOlustu?.Invoke();
                     dosya.Ac(txtbox_kasaAdi.Text);
                     this.Close();
                 }

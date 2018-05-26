@@ -39,7 +39,6 @@
             this.btn_kasaEkle = new System.Windows.Forms.Button();
             this.btn_yedekAl = new System.Windows.Forms.Button();
             this.txt_yedekKasaAdi = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.grpbox_Kasalar.SuspendLayout();
             this.grpbox_KasaOzellik.SuspendLayout();
@@ -163,15 +162,6 @@
             this.txt_yedekKasaAdi.Size = new System.Drawing.Size(141, 22);
             this.txt_yedekKasaAdi.TabIndex = 7;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 17);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "label1";
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -187,7 +177,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1056, 474);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.txt_yedekKasaAdi);
             this.Controls.Add(this.btn_yedekAl);
             this.Controls.Add(this.grpbox_KasaOzellik);
@@ -221,7 +210,6 @@
         public System.Windows.Forms.ListView listv_Kasalar;
         private System.Windows.Forms.Button btn_yedekAl;
         private System.Windows.Forms.TextBox txt_yedekKasaAdi;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }
 }
