@@ -14,7 +14,7 @@ using Dropbox.Api;
 namespace proje
 {
     public partial class icerikForm : Form
-    {
+    { 
         List<string> klasorunIlkHali = new List<string>();
         List<string> buluttanSilinecekler = new List<string>();
         string kasaIsmi;
@@ -173,7 +173,7 @@ namespace proje
 
                 systemWatcher.Path = path;
                 systemWatcher.EnableRaisingEvents = true;
-                systemWatcher.NotifyFilter = NotifyFilters.Size;
+                systemWatcher.NotifyFilter = NotifyFilters.Size |NotifyFilters.LastWrite | NotifyFilters.LastAccess;
 
                 systemWatcher.Changed += new FileSystemEventHandler(onChanged);
 
@@ -190,25 +190,38 @@ namespace proje
 
         private void onChanged(object sender,FileSystemEventArgs e)
         {
+            DialogResult dResult=DialogResult.No;
             systemWatcher.EnableRaisingEvents = false;
             if (e.ChangeType == WatcherChangeTypes.Changed)
             {
-               DialogResult = MessageBox.Show("Dosyada bir değişiklik yaptınız bunu buluta yüklemek ister misiniz ?", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (DialogResult == DialogResult.Yes)
+                Invoke((MethodInvoker)delegate {
+                    dResult = MessageBox.Show("Dosyada bir değişiklik yaptınız bunu buluta yüklemek ister misiniz ?", "Uyarı", MessageBoxButtons.YesNo, MessageBoxIcon.Question,MessageBoxDefaultButton.Button1);
+                }
+                );
+
+                if (dResult == DialogResult.Yes)
                 {
                     string[] yol = e.FullPath.Split('\\');
-                    
+
                     string fileName = e.Name;
                     yol[0] = "";
                     yol[yol.Length - 1] = "";
-                    string x = string.Join("\\",yol);
+                    string x = string.Join("\\", yol);
                     x = x.Replace(kasaIsmi, "sifreler");
                     Directory.CreateDirectory(x);
-                    kripto.Sifrele(fileName,x,x.Replace("sifreler",kasaIsmi),guvenlik);
-                    btn_kasaKitle_Click(e.FullPath,e);
+                    kripto.Sifrele(fileName, x, x.Replace("sifreler", kasaIsmi), guvenlik);
+                    btn_kasaKitle_Click(e.FullPath, e);
+                }
+                else
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        MessageBox.Show("Değişiklikler kayıt edilmedi.");
+                        systemWatcher.EnableRaisingEvents = true;
+                    }
+                    );
                 }
             }
-            
         }
 
         private async void btn_kasaKitle_Click(object sender, EventArgs e)
@@ -223,6 +236,7 @@ namespace proje
             Directory.CreateDirectory(sifrelerYol);
 
             // FIXX SADECE TEK DOSYA YÜKLEME DURUMUNA BAK
+
             // atılan şey klasör mü yoksa dosya mı diye bakıyoruz dosya ise;
             if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
             {
